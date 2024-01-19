@@ -417,6 +417,28 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  late SharedPreferences prefs;
+
+  final addictionController = TextEditingController();
+  final ageController = TextEditingController();
+  final genderController = TextEditingController();
+  final nameController = TextEditingController();
+
+  String name = 'Human';
+  String age = '16';
+  String gender = 'Male';
+  String addiction = 'General';
+
+  Future<void> initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initPrefs();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -431,8 +453,119 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
         ),
-        body: Column(
-          children: [],
+        body: FutureBuilder<SharedPreferences>(
+          future: SharedPreferences.getInstance(),
+          builder: (BuildContext context,
+              AsyncSnapshot<SharedPreferences> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator(); // Show a loading spinner while waiting
+            } else {
+              final prefs = snapshot.data;
+              return SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          labelText: 'Name',
+                          hintText: prefs?.getString('name') ?? 'Name',
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0, bottom: 20),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              prefs?.setString('name', nameController.text);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              alignment: Alignment.centerLeft,
+                            ),
+                            child: const Icon(Icons.arrow_forward),
+                          ),
+                        ),
+                      ),
+                      TextField(
+                        controller: ageController,
+                        decoration: InputDecoration(
+                          labelText: 'Age',
+                          hintText: prefs?.getString('age') ?? 'Age',
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0, bottom: 20),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              prefs?.setString('age', ageController.text);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              alignment: Alignment.centerLeft,
+                            ),
+                            child: const Icon(Icons.arrow_forward),
+                          ),
+                        ),
+                      ),
+                      TextField(
+                        controller: genderController,
+                        decoration: InputDecoration(
+                          labelText: 'Gender',
+                          hintText: prefs?.getString('Gender') ?? 'Gender',
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0, bottom: 20),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              prefs?.setString('gender', genderController.text);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              alignment: Alignment.centerLeft,
+                            ),
+                            child: const Icon(Icons.arrow_forward),
+                          ),
+                        ),
+                      ),
+                      TextField(
+                        controller: addictionController,
+                        decoration: InputDecoration(
+                          labelText: 'Addiction',
+                          hintText:
+                              prefs?.getString('addiction') ?? 'Addiction',
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0, bottom: 20),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              prefs?.setString(
+                                  'addiction', addictionController.text);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              alignment: Alignment.centerLeft,
+                            ),
+                            child: const Icon(Icons.arrow_forward),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+          },
         ));
   }
 }
