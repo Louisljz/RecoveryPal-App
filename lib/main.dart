@@ -538,7 +538,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       TextField(
                         controller: addictionController,
                         decoration: InputDecoration(
-                          labelText: 'Addiction',
+                          labelText: 'What are you struggling with?',
                           hintText:
                               prefs?.getString('addiction') ?? 'Addiction',
                           border: const OutlineInputBorder(),
