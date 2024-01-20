@@ -163,6 +163,13 @@ class _JournalPageState extends State<JournalPage> {
   String affirmation = '';
   String meditation = '';
 
+  Future<void> addToList(String value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> myList = prefs.getStringList('mood_list') ?? [];
+    myList.add(value);
+    await prefs.setStringList('mood_list', myList);
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -265,6 +272,7 @@ class _JournalPageState extends State<JournalPage> {
                                               conversation.join(' + '));
                                       setState(() async {
                                         moodScale = response['mood_scale'];
+                                        addToList(moodScale.toString());
                                         journalPrompt =
                                             prompts['journal'] is List
                                                 ? prompts['journal'].join(' ')

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class LineChartSample2 extends StatefulWidget {
-  const LineChartSample2({super.key});
+  final List<FlSpot> spots;
+
+  const LineChartSample2({super.key, required this.spots});
 
   @override
   State<LineChartSample2> createState() => _LineChartSample2State();
@@ -17,7 +19,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
         padding: const EdgeInsets.only(
           right: 18,
           left: 12,
-          top: 24,
+          top: 55,
           bottom: 12,
         ),
         child: LineChart(
@@ -46,15 +48,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
-          spots: const [
-            FlSpot(0, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
-            FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
-          ],
+          spots: widget.spots,
           isCurved: true,
           color: Theme.of(context).colorScheme.onSurface,
           barWidth: 5,

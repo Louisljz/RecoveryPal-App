@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:audioplayers/audioplayers.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class MeditationPage extends StatefulWidget {
   const MeditationPage({super.key});
@@ -123,7 +126,24 @@ class _MeditationPageState extends State<MeditationPage> {
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.w500)),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MeditationTruePage(
+                                      name: prefs.getString('name') ?? 'Human',
+                                      age: prefs.getString('age') ?? '0',
+                                      gender: prefs.getString('gender') ??
+                                          'Unknown',
+                                      addiction: prefs.getString('addiction') ??
+                                          'General',
+                                      emotion: prefs.getString('emotion') ??
+                                          'Neutral',
+                                      duration: sliderValue.toString(),
+                                      theme: 'Self-Compassiona and Healing',
+                                    )),
+                          );
+                        },
                       ),
                     ),
                     Padding(
@@ -135,7 +155,24 @@ class _MeditationPageState extends State<MeditationPage> {
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.w500)),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MeditationTruePage(
+                                      name: prefs.getString('name') ?? 'Human',
+                                      age: prefs.getString('age') ?? '0',
+                                      gender: prefs.getString('gender') ??
+                                          'Unknown',
+                                      addiction: prefs.getString('addiction') ??
+                                          'General',
+                                      emotion: prefs.getString('emotion') ??
+                                          'Neutral',
+                                      duration: sliderValue.toString(),
+                                      theme: 'Building Resilience',
+                                    )),
+                          );
+                        },
                       ),
                     ),
                     Padding(
@@ -147,7 +184,24 @@ class _MeditationPageState extends State<MeditationPage> {
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.w500)),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MeditationTruePage(
+                                      name: prefs.getString('name') ?? 'Human',
+                                      age: prefs.getString('age') ?? '0',
+                                      gender: prefs.getString('gender') ??
+                                          'Unknown',
+                                      addiction: prefs.getString('addiction') ??
+                                          'General',
+                                      emotion: prefs.getString('emotion') ??
+                                          'Neutral',
+                                      duration: sliderValue.toString(),
+                                      theme: 'Gratitude and Posiviity',
+                                    )),
+                          );
+                        },
                       ),
                     ),
                     Padding(
@@ -159,7 +213,24 @@ class _MeditationPageState extends State<MeditationPage> {
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.w500)),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MeditationTruePage(
+                                      name: prefs.getString('name') ?? 'Human',
+                                      age: prefs.getString('age') ?? '0',
+                                      gender: prefs.getString('gender') ??
+                                          'Unknown',
+                                      addiction: prefs.getString('addiction') ??
+                                          'General',
+                                      emotion: prefs.getString('emotion') ??
+                                          'Neutral',
+                                      duration: sliderValue.toString(),
+                                      theme: 'Empowerment and Personal Growth',
+                                    )),
+                          );
+                        },
                       ),
                     ),
                   ],
@@ -194,6 +265,27 @@ class MeditationTruePage extends StatefulWidget {
   State<MeditationTruePage> createState() => _MeditationTruePageState();
 }
 
+Future<String> textToSpeech(String text) async {
+  final response = await http.post(
+    Uri.parse(
+        'https://recovery-pal-api-n6wffmw6za-uc.a.run.app/text-to-speech/?text=$text'),
+    headers: <String, String>{
+      'accept': 'application/json',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    // If the server returns a 200 OK response, then save the MP3 file.
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/output.mp3');
+    await file.writeAsBytes(response.bodyBytes);
+    return file.uri.toString(); // return the URI of the file
+  } else {
+    // If the server did not return a 200 OK response, then throw an exception.
+    throw Exception('Failed to convert text to speech');
+  }
+}
+
 class _MeditationTruePageState extends State<MeditationTruePage> {
   Future<String>? meditationFuture;
 
@@ -217,6 +309,25 @@ class _MeditationTruePageState extends State<MeditationTruePage> {
   void initState() {
     super.initState();
     meditationFuture = meditation();
+  }
+
+  Future<Image> processImage(String meditation) async {
+    final response = await http.post(
+      Uri.parse(
+          'https://recovery-pal-api-n6wffmw6za-uc.a.run.app/create-image?script=$meditation'),
+      headers: <String, String>{
+        'accept': 'application/json',
+      },
+    );
+
+    var image = Image.memory(response.bodyBytes);
+    debugPrint("Image processed");
+    try {
+      return image;
+    } catch (e) {
+      debugPrint(e.toString());
+      return image;
+    }
   }
 
   Future<String> meditation() async {
@@ -260,32 +371,132 @@ class _MeditationTruePageState extends State<MeditationTruePage> {
               return SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Card(
-                    elevation: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                snapshot.data ?? 'No meditation found',
-                                style: const TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                  child: Column(
+                    children: [
+                      FutureBuilder(
+                        future: processImage(snapshot.data!),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: CircularProgressIndicator(),
                               ),
-                            ),
-                          ),
-                        ],
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text('Error: ${snapshot.error}'),
+                            );
+                          } else {
+                            return SizedBox(
+                              height: 300,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: snapshot.data as Widget,
+                              ),
+                            );
+                          }
+                        },
                       ),
-                    ),
+                      Card(
+                        elevation: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Stack(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        '\n ${snapshot.data}',
+                                        style: const TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: TextToSpeechWidget(data: snapshot.data!),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );
             }
           },
         ));
+  }
+}
+
+class TextToSpeechWidget extends StatefulWidget {
+  final String data;
+
+  const TextToSpeechWidget({super.key, required this.data});
+
+  @override
+  State<TextToSpeechWidget> createState() => _TextToSpeechWidgetState();
+}
+
+class _TextToSpeechWidgetState extends State<TextToSpeechWidget> {
+  Future<String>? _future;
+  final player = AudioPlayer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: _future == null
+          ? IconButton(
+              icon: const Icon(Icons.record_voice_over_outlined),
+              onPressed: () {
+                setState(() {
+                  _future = textToSpeech(widget.data); // use data here
+                });
+              },
+            )
+          : FutureBuilder<String>(
+              future: _future,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return const Icon(Icons.error);
+                } else {
+                  debugPrint("Audio done");
+                  bool isPlaying = true;
+                  return IconButton(
+                    icon: Icon(
+                      // ignore: dead_code
+                      isPlaying ? Icons.pause : Icons.play_arrow,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (isPlaying) {
+                          player.pause();
+                          isPlaying = false;
+                        } else {
+                          player.play(AssetSource(snapshot.data!));
+                          isPlaying = true;
+                        }
+                      });
+                      _future = textToSpeech(
+                          widget.data); // move this line outside of setState
+                    },
+                  );
+                }
+              },
+            ),
+    );
   }
 }
