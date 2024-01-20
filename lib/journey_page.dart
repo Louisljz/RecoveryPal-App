@@ -351,7 +351,6 @@ class _JournalPageState extends State<JournalPage> {
                                 const Icon(Icons.create),
                                 const SizedBox(width: 8.0),
                                 Expanded(
-                                  // Wrap the Text widget with an Expanded widget
                                   child: Text(
                                     prefs.get('artPrompt') as String,
                                     style: const TextStyle(
