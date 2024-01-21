@@ -474,24 +474,13 @@ class _TextToSpeechWidgetState extends State<TextToSpeechWidget> {
                   return const Icon(Icons.error);
                 } else {
                   debugPrint("Audio done");
-                  bool isPlaying = true;
                   return IconButton(
-                    icon: Icon(
-                      // ignore: dead_code
-                      isPlaying ? Icons.pause : Icons.play_arrow,
-                    ),
+                    icon: const Icon(Icons.play_arrow),
                     onPressed: () {
                       setState(() {
-                        if (isPlaying) {
-                          player.pause();
-                          isPlaying = false;
-                        } else {
-                          player.play(AssetSource(snapshot.data!));
-                          isPlaying = true;
-                        }
+                        player.play(DeviceFileSource(
+                            '/data/user/0/com.example.recovery_pal/app_flutter/output.mp3'));
                       });
-                      _future = textToSpeech(
-                          widget.data); // move this line outside of setState
                     },
                   );
                 }

@@ -123,7 +123,7 @@ class _HomepageState extends State<Homepage> {
       prefs.setStringList('moods_list', ["5"]);
     }
 
-    if (lastLogin - now > twentyFourHours) {
+    if (lastLogin - now > twentyFourHours || lastLogin == 0) {
       debugPrint("Last login was over 24 hours ago");
       prefs.setInt('lastLogin', now);
       // ignore: use_build_context_synchronously
@@ -239,7 +239,7 @@ class _HomepageState extends State<Homepage> {
                                     ),
                                     subtitle: Text(
                                       prefs.getString('affirmation') ??
-                                          'Affirmation',
+                                          'Please fill in the emotion question!',
                                       style: const TextStyle(fontSize: 17),
                                     ),
                                   ),
@@ -642,6 +642,22 @@ class _SettingsPageState extends State<SettingsPage> {
                               alignment: Alignment.centerLeft,
                             ),
                             child: const Icon(Icons.arrow_forward),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0, bottom: 20),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (prefs != null) {
+                                setState(() {
+                                  prefs.clear();
+                                });
+                              }
+                            },
+                            child: const Icon(Icons.cancel),
                           ),
                         ),
                       ),

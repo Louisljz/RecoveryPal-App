@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:flutter/rendering.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
 
 Future<String> uploadImage(File image) async {
   var request = http.MultipartRequest(
@@ -126,6 +127,7 @@ class _JournalPageState extends State<JournalPage> {
   final IsScreenshottingState _isScreenshottingState = IsScreenshottingState();
 
   final TextEditingController _controller = TextEditingController();
+  final ImagePicker picker = ImagePicker();
   final GlobalKey _globalKey = GlobalKey();
   String inputValue = '';
   late SharedPreferences prefs;
