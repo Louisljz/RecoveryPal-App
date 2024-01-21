@@ -252,17 +252,17 @@ class _JournalPageState extends State<JournalPage> {
                             onPressed: isLoading
                                 ? null
                                 : () async {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
+                                    isLoading = true;
+                                    setState(() {});
 
+                                    // Perform the asynchronous operation
                                     String currentQuestion = followUpQuestion;
-
                                     response = await postFeelings(
                                         followUpQuestion, _controller.text);
 
                                     if (response['follow_up_question'] !=
                                         null) {
+                                      // Update the state after the async operation is complete
                                       setState(() {
                                         followUpQuestion =
                                             response['follow_up_question'];
@@ -272,46 +272,44 @@ class _JournalPageState extends State<JournalPage> {
                                       Map<String, dynamic> prompts =
                                           await createPrompts(moodScale,
                                               conversation.join(' + '));
-                                      setState(() async {
-                                        moodScale = response['mood_scale'];
-                                        addToList(moodScale.toString());
-                                        journalPrompt =
-                                            prompts['journal'] is List
-                                                ? prompts['journal'].join(' ')
-                                                : prompts['journal'];
-                                        artPrompt = prompts['art'] is List
-                                            ? prompts['art'].join(' ')
-                                            : prompts['art'];
-                                        meditation = prompts['meditation']
-                                                is List
-                                            ? prompts['meditation'].join(' ')
-                                            : prompts['meditation'];
-                                        affirmation = prompts['affirmation']
-                                                is List
-                                            ? prompts['affirmation'].join(' ')
-                                            : prompts['affirmation'];
+                                      moodScale = response['mood_scale'];
+                                      addToList(moodScale.toString());
+                                      journalPrompt = prompts['journal'] is List
+                                          ? prompts['journal'].join(' ')
+                                          : prompts['journal'];
+                                      artPrompt = prompts['art'] is List
+                                          ? prompts['art'].join(' ')
+                                          : prompts['art'];
+                                      meditation = prompts['meditation'] is List
+                                          ? prompts['meditation'].join(' ')
+                                          : prompts['meditation'];
+                                      affirmation =
+                                          prompts['affirmation'] is List
+                                              ? prompts['affirmation'].join(' ')
+                                              : prompts['affirmation'];
 
-                                        prefs.setInt('moodScale', moodScale);
-                                        prefs.setString(
-                                            'journalPrompt', journalPrompt);
-                                        prefs.setString('artPrompt', artPrompt);
-                                        prefs.setString(
-                                            'meditation', meditation);
-                                        prefs.setString(
-                                            'affirmation', affirmation);
-                                        prefs.setBool(
-                                            'finalQuestion', finalQuestion);
+                                      prefs.setInt('moodScale', moodScale);
+                                      prefs.setString(
+                                          'journalPrompt', journalPrompt);
+                                      prefs.setString('artPrompt', artPrompt);
+                                      prefs.setString('meditation', meditation);
+                                      prefs.setString(
+                                          'affirmation', affirmation);
+                                      prefs.setBool(
+                                          'finalQuestion', finalQuestion);
 
-                                        finalQuestion = true;
-                                      });
+                                      finalQuestion = true;
+
+                                      // Update the state after the async operation is complete
+                                      setState(() {});
                                     }
 
                                     conversation.add(
                                         'Question: $currentQuestion Answer: $inputValue');
 
-                                    setState(() {
-                                      isLoading = false;
-                                    });
+                                    isLoading = false;
+                                    // Update the state after the async operation is complete
+                                    setState(() {});
                                   },
                             child: isLoading
                                 ? const SizedBox(

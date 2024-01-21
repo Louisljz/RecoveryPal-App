@@ -451,7 +451,35 @@ class TextToSpeechWidget extends StatefulWidget {
 
 class _TextToSpeechWidgetState extends State<TextToSpeechWidget> {
   Future<String>? _future;
-  final player = AudioPlayer();
+  bool isPlaying = false;
+  late AudioPlayer player;
+  late PlayerState playerState = PlayerState.stopped;
+
+  @override
+  void initState() {
+    super.initState();
+
+    player = AudioPlayer();
+    debugPrint('AudioPlayer initialized');
+
+    player.onPlayerStateChanged.listen((PlayerState s) {
+      setState(() {
+        playerState = s;
+      });
+      {
+        switch (s) {
+          case PlayerState.paused:
+            debugPrint('Player stopped!');
+            break;
+          case PlayerState.playing:
+            debugPrint('Player complete!');
+            break;
+          default:
+            break;
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -465,7 +493,8 @@ class _TextToSpeechWidgetState extends State<TextToSpeechWidget> {
                 });
               },
             )
-          : FutureBuilder<String>(
+          : // Add a new state variable
+          FutureBuilder<String>(
               future: _future,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -473,14 +502,19 @@ class _TextToSpeechWidgetState extends State<TextToSpeechWidget> {
                 } else if (snapshot.hasError) {
                   return const Icon(Icons.error);
                 } else {
-                  debugPrint("Audio done");
                   return IconButton(
-                    icon: const Icon(Icons.play_arrow),
+                    icon: playerState == PlayerState.playing
+                        ? const Icon(Icons.pause)
+                        : const Icon(Icons.play_arrow),
                     onPressed: () {
-                      setState(() {
+                      if (playerState == PlayerState.playing) {
+                        debugPrint("Pausing");
+                        player.pause();
+                      } else {
+                        debugPrint("Playing");
                         player.play(DeviceFileSource(
                             '/data/user/0/com.example.recovery_pal/app_flutter/output.mp3'));
-                      });
+                      }
                     },
                   );
                 }
