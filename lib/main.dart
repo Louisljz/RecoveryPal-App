@@ -171,7 +171,8 @@ class _HomepageState extends State<Homepage> {
                         children: [
                           Align(
                             alignment: Alignment.centerLeft,
-                            child: Text("Welcome, ${prefs.getString('name')}",
+                            child: Text(
+                                "Welcome, ${prefs.getString('name') ?? 'Human'}!",
                                 style: TextStyle(
                                     fontSize: 34.0,
                                     fontWeight: FontWeight.w500,
@@ -232,7 +233,7 @@ class _HomepageState extends State<Homepage> {
                                       padding:
                                           const EdgeInsets.only(bottom: 4.0),
                                       child: Text(
-                                          'Keep going ${prefs.getString('name')}!',
+                                          'Keep going ${prefs.getString('name') ?? 'Human'}!',
                                           style: const TextStyle(
                                               fontSize: 20.0,
                                               fontWeight: FontWeight.w500)),

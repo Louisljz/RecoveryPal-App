@@ -127,6 +127,7 @@ class _JournalPageState extends State<JournalPage> {
   final IsScreenshottingState _isScreenshottingState = IsScreenshottingState();
 
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller2 = TextEditingController();
   final ImagePicker picker = ImagePicker();
   final GlobalKey _globalKey = GlobalKey();
   String inputValue = '';
@@ -175,6 +176,7 @@ class _JournalPageState extends State<JournalPage> {
   @override
   void dispose() {
     _controller.dispose();
+    _controller2.dispose();
     super.dispose();
   }
 
@@ -522,7 +524,7 @@ class _JournalPageState extends State<JournalPage> {
                         padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
                         child: TextField(
                           maxLines: 5,
-                          controller: _controller,
+                          controller: _controller2,
                           onChanged: (value) {
                             inputValue = value;
                             debugPrint(inputValue);
@@ -532,7 +534,7 @@ class _JournalPageState extends State<JournalPage> {
                                 color: Theme.of(context).colorScheme.primary),
                             suffixIcon: InkWell(
                               onTap: () {
-                                _controller.clear();
+                                _controller2.clear();
                                 inputValue = '';
                               },
                               child: Icon(Icons.clear,
