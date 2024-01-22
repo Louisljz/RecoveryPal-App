@@ -123,7 +123,7 @@ class _HomepageState extends State<Homepage> {
       prefs.setStringList('moods_list', ["5"]);
     }
 
-    if (lastLogin - now > twentyFourHours || lastLogin == 0) {
+    if (!widget.alreadyLogin) {
       debugPrint("Last login was over 24 hours ago");
       prefs.setInt('lastLogin', now);
       // ignore: use_build_context_synchronously
@@ -398,17 +398,15 @@ class _LoginPageState extends State<LoginPage> {
                               onPressed: isLoading
                                   ? null
                                   : () async {
-                                      setState(() {
-                                        isLoading = true;
-                                      });
-
+                                      isLoading = true;
+                                      setState(() {});
                                       String currentQuestion = followUpQuestion;
-
                                       response = await postFeelings(
                                           followUpQuestion, _controller.text);
 
                                       if (response['follow_up_question'] !=
                                           null) {
+                                        // Update the state after the async operation is complete
                                         setState(() {
                                           followUpQuestion =
                                               response['follow_up_question'];
@@ -418,53 +416,47 @@ class _LoginPageState extends State<LoginPage> {
                                         Map<String, dynamic> prompts =
                                             await createPrompts(moodScale,
                                                 conversation.join(' + '));
-                                        setState(() {
-                                          moodScale = response['mood_scale'];
-                                          addToList(moodScale.toString());
-                                          journalPrompt =
-                                              prompts['journal'] is List
-                                                  ? prompts['journal'].join(' ')
-                                                  : prompts['journal'];
-                                          artPrompt = prompts['art'] is List
-                                              ? prompts['art'].join(' ')
-                                              : prompts['art'];
-                                          meditation = prompts['meditation']
-                                                  is List
-                                              ? prompts['meditation'].join(' ')
-                                              : prompts['meditation'];
-                                          affirmation = prompts['affirmation']
-                                                  is List
-                                              ? prompts['affirmation'].join(' ')
-                                              : prompts['affirmation'];
+                                        moodScale = response['mood_scale'];
+                                        addToList(moodScale.toString());
+                                        journalPrompt =
+                                            prompts['journal'] is List
+                                                ? prompts['journal'].join(' ')
+                                                : prompts['journal'];
+                                        artPrompt = prompts['art'] is List
+                                            ? prompts['art'].join(' ')
+                                            : prompts['art'];
+                                        meditation = prompts['meditation']
+                                                is List
+                                            ? prompts['meditation'].join(' ')
+                                            : prompts['meditation'];
+                                        affirmation = prompts['affirmation']
+                                                is List
+                                            ? prompts['affirmation'].join(' ')
+                                            : prompts['affirmation'];
 
-                                          debugPrint("Saving to prefs");
+                                        prefs.setInt('moodScale', moodScale);
+                                        prefs.setString(
+                                            'journalPrompt', journalPrompt);
+                                        prefs.setString('artPrompt', artPrompt);
+                                        prefs.setString(
+                                            'meditation', meditation);
+                                        prefs.setString(
+                                            'affirmation', affirmation);
+                                        prefs.setBool(
+                                            'finalQuestion', finalQuestion);
 
-                                          prefs.setInt('moodScale', moodScale);
-                                          prefs.setString(
-                                              'journalPrompt', journalPrompt);
-                                          prefs.setString(
-                                              'artPrompt', artPrompt);
-                                          prefs.setString(
-                                              'meditation', meditation);
-                                          prefs.setString(
-                                              'affirmation', affirmation);
-                                          prefs.setBool(
-                                              'finalQuestion', finalQuestion);
+                                        finalQuestion = true;
 
-                                          finalQuestion = true;
-                                        });
+                                        // Update the state after the async operation is complete
+                                        setState(() {});
                                       }
 
                                       conversation.add(
                                           'Question: $currentQuestion Answer: $inputValue');
 
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-
-                                      setState(() {
-                                        isLoading = false;
-                                      });
+                                      isLoading = false;
+                                      // Update the state after the async operation is complete
+                                      setState(() {});
 
                                       // ignore: use_build_context_synchronously
                                       Navigator.push(

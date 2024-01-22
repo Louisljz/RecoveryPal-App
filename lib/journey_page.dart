@@ -51,6 +51,8 @@ Future<Map<String, dynamic>> postFeelings(
         'https://recovery-pal-api-n6wffmw6za-uc.a.run.app/process-feelings?conversation=$conversation'),
   );
 
+  debugPrint("Hey!");
+  debugPrint(response.body);
   return jsonDecode(response.body);
 }
 
@@ -156,6 +158,7 @@ class _JournalPageState extends State<JournalPage> {
 
   bool questionDone = false;
   bool drawingDone = false;
+  bool journalDone = false;
 
   String meaning = '';
 
@@ -497,7 +500,7 @@ class _JournalPageState extends State<JournalPage> {
                                       Theme.of(context).colorScheme.onSurface)),
                         ),
                       ),
-                      if (prefs.get('journalPrompt') != null)
+                      if (prefs.get('journalPrompt') != null && !journalDone)
                         Card(
                           elevation: 1,
                           child: Padding(
@@ -520,39 +523,59 @@ class _JournalPageState extends State<JournalPage> {
                             ),
                           ),
                         ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
-                        child: TextField(
-                          maxLines: 5,
-                          controller: _controller2,
-                          onChanged: (value) {
-                            inputValue = value;
-                            debugPrint(inputValue);
-                          },
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.book_outlined,
-                                color: Theme.of(context).colorScheme.primary),
-                            suffixIcon: InkWell(
-                              onTap: () {
-                                _controller2.clear();
-                                inputValue = '';
-                              },
-                              child: Icon(Icons.clear,
+                      if (!journalDone)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
+                          child: TextField(
+                            maxLines: 5,
+                            controller: _controller2,
+                            onChanged: (value) {
+                              inputValue = value;
+                              debugPrint(inputValue);
+                            },
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.book_outlined,
                                   color: Theme.of(context).colorScheme.primary),
+                              suffixIcon: InkWell(
+                                onTap: () {
+                                  _controller2.clear();
+                                  inputValue = '';
+                                },
+                                child: Icon(Icons.clear,
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                              ),
+                              labelText: 'Journal',
+                              hintText: 'My day was...',
+                              border: const OutlineInputBorder(),
                             ),
-                            labelText: 'Journal',
-                            hintText: 'My day was...',
-                            border: const OutlineInputBorder(),
                           ),
                         ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Icon(Icons.arrow_forward),
+                      if (!journalDone)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                prefs.setString('journal', _controller2.text);
+                                journalDone = true;
+                              });
+                            },
+                            child: const Icon(Icons.arrow_forward),
+                          ),
                         ),
-                      ),
+                      if (journalDone)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                journalDone = false;
+                              });
+                            },
+                            child: const Icon(Icons.arrow_back),
+                          ),
+                        ),
                       const SizedBox(
                         height: 15,
                       )

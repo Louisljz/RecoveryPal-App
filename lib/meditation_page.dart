@@ -112,6 +112,8 @@ class _MeditationPageState extends State<MeditationPage> {
                                           'Neutral',
                                       duration: sliderValue.toString(),
                                       theme: 'Mindfulness and Relaxation',
+                                      journal:
+                                          prefs.getString('journal') ?? 'None',
                                     )),
                           );
                         },
@@ -141,6 +143,8 @@ class _MeditationPageState extends State<MeditationPage> {
                                           'Neutral',
                                       duration: sliderValue.toString(),
                                       theme: 'Self-Compassiona and Healing',
+                                      journal:
+                                          prefs.getString('journal') ?? 'None',
                                     )),
                           );
                         },
@@ -170,6 +174,8 @@ class _MeditationPageState extends State<MeditationPage> {
                                           'Neutral',
                                       duration: sliderValue.toString(),
                                       theme: 'Building Resilience',
+                                      journal:
+                                          prefs.getString('journal') ?? 'None',
                                     )),
                           );
                         },
@@ -199,6 +205,8 @@ class _MeditationPageState extends State<MeditationPage> {
                                           'Neutral',
                                       duration: sliderValue.toString(),
                                       theme: 'Gratitude and Posiviity',
+                                      journal:
+                                          prefs.getString('journal') ?? 'None',
                                     )),
                           );
                         },
@@ -228,6 +236,8 @@ class _MeditationPageState extends State<MeditationPage> {
                                           'Neutral',
                                       duration: sliderValue.toString(),
                                       theme: 'Empowerment and Personal Growth',
+                                      journal:
+                                          prefs.getString('journal') ?? 'None',
                                     )),
                           );
                         },
@@ -250,6 +260,7 @@ class MeditationTruePage extends StatefulWidget {
   final String emotion;
   final String duration;
   final String theme;
+  final String journal;
 
   const MeditationTruePage(
       {super.key,
@@ -259,7 +270,8 @@ class MeditationTruePage extends StatefulWidget {
       required this.addiction,
       required this.emotion,
       required this.duration,
-      required this.theme});
+      required this.theme,
+      required this.journal});
 
   @override
   State<MeditationTruePage> createState() => _MeditationTruePageState();
@@ -289,14 +301,21 @@ Future<String> textToSpeech(String text) async {
 class _MeditationTruePageState extends State<MeditationTruePage> {
   Future<String>? meditationFuture;
 
-  Future<String> chooseMeditation(String name, String age, String gender,
-      String struggle, String emotion, String duration, String theme) async {
+  Future<String> chooseMeditation(
+      String name,
+      String age,
+      String gender,
+      String struggle,
+      String emotion,
+      String duration,
+      String theme,
+      String journal) async {
     debugPrint("Hi I'm chooseMeditation() and I was called");
 
     const String baseUrl =
         'https://recovery-pal-api-n6wffmw6za-uc.a.run.app/choose-meditation/';
     final String parameters =
-        '?name=$name&age=$age&gender=$gender&struggle=$struggle&emotion=$emotion&duration=$duration&theme=$theme';
+        '?name=$name&age=$age&gender=$gender&struggle=$struggle&mood=$emotion&duration=$duration&theme=$theme&journal=$journal';
     final String url = baseUrl + parameters;
 
     final response = await http.post(Uri.parse(url));
@@ -338,7 +357,8 @@ class _MeditationTruePageState extends State<MeditationTruePage> {
         widget.addiction,
         widget.emotion,
         widget.duration,
-        widget.theme);
+        widget.theme,
+        widget.journal);
     debugPrint("Meditation done!");
     return meditation;
   }
